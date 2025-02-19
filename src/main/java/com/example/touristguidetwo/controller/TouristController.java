@@ -16,41 +16,32 @@ public class TouristController {
     private final TouristService touristService;
 
     public TouristController(TouristService touristService){
+
         this.touristService = touristService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public String getAllTouristAttractions(Model model) {
         List<TouristAttraction> touristAttractions = touristService.getAllTouristAttractions();
         model.addAttribute("touristAttractions", touristAttractions);
-        return "index";
+        return "attractionList";
     }
 
     @GetMapping("/{name}")
     public String getTouristAttractionByName(@PathVariable String name, Model model) {
         TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
-        if (touristAttraction != null) {
             model.addAttribute("touristAttraction", touristAttraction);
             return "touristAttractionDetail";
-        } else {
-            model.addAttribute("error", "Attraction not found");
-            return "error";
-        }
     }
 
-    @GetMapping("/attractions/{name}/tags")
+    @GetMapping("/{name}/tags")
     public String getTouristAttractionByNameAndTags(@RequestParam String name, @RequestParam List<Tags> tags, Model model) {
         List<TouristAttraction> touristAttractions = touristService.findTouristAttractionByNameAndTags(name, tags);
-        if (!touristAttractions.isEmpty()) {
             model.addAttribute("touristAttractions", touristAttractions);
-            return "index";
-        } else {
-            model.addAttribute("error", "No attractions found with the specified tags");
-            return "error";
-        }
+            return "attractionList";
     }
 
-    @GetMapping("/attractions/add")
+    @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("touristAttraction", new TouristAttraction());
         return "addAttraction";
@@ -63,35 +54,22 @@ public class TouristController {
     }
 
     @GetMapping("/{name}/edit")
-    public String showEditForm(@PathVariable String name, Model model) {
+    public String editTouristAttraction(@PathVariable String name, Model model) {
         TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
-        if (touristAttraction != null) {
             model.addAttribute("touristAttraction", touristAttraction);
             return "editAttraction";
-        } else {
-            model.addAttribute("error", "Attraction not found");
-            return "error";
         }
-    }
 
-    @PostMapping("/{name}/edit")
-    public String editTouristAttraction(@PathVariable String name, @ModelAttribute TouristAttraction touristAttraction) {
-        TouristAttraction updatedAttraction = touristService.updateTouristAttraction(touristAttraction);
-        if (updatedAttraction != null) {
+    @PostMapping("/edit")
+    public String updateTouristAttraction(@ModelAttribute TouristAttraction touristAttraction) {
+        touristService.updateTouristAttraction(touristAttraction);
             return "redirect:/attractions/";
-        } else {
-            return "error";
-        }
     }
 
-    @PostMapping("/{name}/delete")
+    @PostMapping("/delete/{name}")
     public String deleteTouristAttraction(@PathVariable String name) {
-        TouristAttraction deletedAttraction = touristService.deleteTouristAttraction(name);
-        if (deletedAttraction != null) {
+        touristService.deleteTouristAttraction(name);
             return "redirect:/attractions/";
-        } else {
-            return "error";
-        }
     }
 }
 
