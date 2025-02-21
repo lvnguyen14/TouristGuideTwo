@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/attractions")
@@ -34,18 +36,12 @@ public class TouristController {
             return "touristAttractionDetail";
     }
 
-    @GetMapping("/{name}/tags")
-    public String getTouristAttractionByNameAndTags(@RequestParam String name, @RequestParam List<Tags> tags, Model model) {
-        List<TouristAttraction> touristAttractions = touristService.findTouristAttractionByNameAndTags(name, tags);
-            model.addAttribute("touristAttractions", touristAttractions);
-            return "attractionList";
-    }
-
-    @GetMapping("/add")
-    public String showAddForm(Model model) {
-        model.addAttribute("touristAttraction", new TouristAttraction());
-        return "addAttraction";
-    }
+@GetMapping("/{name}/tags")
+public String getTouristAttractionByNameAndTags(@PathVariable String name, Model model) {
+    TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
+    model.addAttribute("touristAttraction", touristAttraction);
+    return "tags";
+}
 
     @PostMapping("/add")
     public String addTouristAttraction(@ModelAttribute TouristAttraction touristAttraction) {
@@ -70,6 +66,32 @@ public class TouristController {
     public String deleteTouristAttraction(@PathVariable String name) {
         touristService.deleteTouristAttraction(name);
             return "redirect:/attractions/";
+    }
+
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        List<String> cities = touristService.getCities();
+        List<String> tags = Arrays.stream(Tags.values())  // Convert enum to List<String>
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        model.addAttribute("cities", cities);
+        model.addAttribute("tags", tags);  // This is now a List<String>
+        model.addAttribute("touristAttraction", new TouristAttraction());
+
+        return "addAttraction";
+    }
+
+    @PostMapping("/save")
+    public String saveTouristAttraction(@ModelAttribute TouristAttraction touristAttraction) {
+        List<Tags> selectedTags = touristAttraction.getTags().stream()
+                .map(tag -> Tags.valueOf(tag.toString()))
+                .collect(Collectors.toList());
+
+        touristAttraction.setTags(selectedTags);
+        touristService.addTouristAttraction(touristAttraction);
+
+        return "redirect:/attractions";
     }
 }
 

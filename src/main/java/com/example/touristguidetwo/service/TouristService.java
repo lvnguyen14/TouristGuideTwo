@@ -52,6 +52,14 @@ public class TouristService {
     public TouristAttraction updateTouristAttraction(TouristAttraction touristAttraction) {
         return touristRepository.updateTouristAttraction(touristAttraction);
     }
+
+    public List<String> getCities() {
+        return touristRepository.getCities();
+    }
+
+    public List<String> getTags() {
+        return touristRepository.getTags();
+    }
 }
 
 

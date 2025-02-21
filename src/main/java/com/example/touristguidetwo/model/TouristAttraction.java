@@ -17,11 +17,10 @@ public class TouristAttraction {
     }
 
     public TouristAttraction() {
-        // Standardkonstruktør
-        this.name = ""; // Sætter standardværdier (kan ændres til det, du ønsker)
+        this.name = "";
         this.description = "";
-        this.city = City.København; // eller en hvilken som helst standardværdi
-        this.tags = List.of(); // Tom liste som standard
+        this.city = City.København;
+        this.tags = List.of();
     }
 
 
