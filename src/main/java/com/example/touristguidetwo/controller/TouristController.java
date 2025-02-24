@@ -52,20 +52,41 @@ public String getTouristAttractionByNameAndTags(@PathVariable String name, Model
     @GetMapping("/{name}/edit")
     public String editTouristAttraction(@PathVariable String name, Model model) {
         TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
+        if (touristAttraction != null) {
             model.addAttribute("touristAttraction", touristAttraction);
+            model.addAttribute("cities", touristService.getCities());
+            model.addAttribute("tags", touristService.getTags());
             return "editAttraction";
         }
+        model.addAttribute("error", "Turristattraktion blev ikke fundet.");
+        return "redirect:/attractions";
+    }
 
     @PostMapping("/edit")
     public String updateTouristAttraction(@ModelAttribute TouristAttraction touristAttraction) {
-        touristService.updateTouristAttraction(touristAttraction);
-            return "redirect:/attractions/";
+        if (touristAttraction.getName() == null) {
+            return "redirect:/attractions";
+        }
+
+        TouristAttraction existingAttraction = touristService.findTouristAttractionByName(touristAttraction.getName());
+        if (existingAttraction != null) {
+            existingAttraction.setCity(touristAttraction.getCity());
+            existingAttraction.setDescription(touristAttraction.getDescription());
+            existingAttraction.setTags(touristAttraction.getTags());
+            touristService.updateTouristAttraction(existingAttraction);
+            return "redirect:/attractions";
+        } else {
+            return "redirect:/attractions";
+        }
     }
 
     @PostMapping("/delete/{name}")
     public String deleteTouristAttraction(@PathVariable String name) {
-        touristService.deleteTouristAttraction(name);
-            return "redirect:/attractions/";
+        TouristAttraction touristAttraction = touristService.findTouristAttractionByName(name);
+        if (touristAttraction != null){
+            touristService.deleteTouristAttraction(name);
+        }
+            return "redirect:/attractions";
     }
 
     @GetMapping("/add")
