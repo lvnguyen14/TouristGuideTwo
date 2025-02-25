@@ -50,8 +50,16 @@ public class TouristService {
     }
 
     public TouristAttraction updateTouristAttraction(TouristAttraction touristAttraction) {
-        return touristRepository.updateTouristAttraction(touristAttraction);
+        TouristAttraction existingAttraction = findTouristAttractionByName(touristAttraction.getName());
+        if (existingAttraction != null) {
+            existingAttraction.setCity(touristAttraction.getCity());
+            existingAttraction.setDescription(touristAttraction.getDescription());
+            existingAttraction.setTags(touristAttraction.getTags());
+            return touristRepository.updateTouristAttraction(existingAttraction);
+        }
+        return null;
     }
+
 
     public List<String> getCities() {
         return touristRepository.getCities();
