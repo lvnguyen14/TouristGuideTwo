@@ -1,5 +1,6 @@
 package com.example.touristguidetwo.service;
 
+import com.example.touristguidetwo.model.City;
 import com.example.touristguidetwo.model.Tags;
 import com.example.touristguidetwo.model.TouristAttraction;
 import com.example.touristguidetwo.repository.TouristRepository;
@@ -24,7 +25,7 @@ public class TouristService {
         return touristRepository.findTouristAttractionByName(name);
     }
 
-    public List<TouristAttraction> findTouristAttractionByNameAndTags(String name, List<Tags> tags) {
+    public List<TouristAttraction> findTouristAttractionByNameAndTags(String name, Tags tags) {
         return touristRepository.findTouristAttractionByNameAndTags(name, tags);
     }
 
@@ -40,7 +41,7 @@ public class TouristService {
         return null;
     }
 
-    public TouristAttraction editTouristAttraction(String name, List<Tags> tags) {
+    public TouristAttraction editTouristAttraction(String name, Tags tags) {
         TouristAttraction touristAttraction = findTouristAttractionByName(name);
         if (touristAttraction != null) {
             touristAttraction.setTags(tags);
@@ -61,11 +62,11 @@ public class TouristService {
     }
 
 
-    public List<String> getCities() {
+    public List<City> getCities() {
         return touristRepository.getCities();
     }
 
-    public List<String> getTags() {
+    public List<Tags> getTags() {
         return touristRepository.getTags();
     }
 }

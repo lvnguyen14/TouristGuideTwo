@@ -1,5 +1,6 @@
 package com.example.touristguidetwo.controller;
 
+import com.example.touristguidetwo.model.City;
 import com.example.touristguidetwo.model.Tags;
 import com.example.touristguidetwo.model.TouristAttraction;
 import com.example.touristguidetwo.service.TouristService;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,25 +93,18 @@ public String getTouristAttractionByNameAndTags(@PathVariable String name, Model
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        List<String> cities = touristService.getCities();
-        List<String> tags = Arrays.stream(Tags.values())  // Convert enum to List<String>
-                .map(Enum::name)
-                .collect(Collectors.toList());
+        List<City> cities = touristService.getCities();
 
         model.addAttribute("cities", cities);
-        model.addAttribute("tags", tags);  // This is now a List<String>
+
         model.addAttribute("touristAttraction", new TouristAttraction());
 
         return "addAttraction";
     }
 
     @PostMapping("/save")
-    public String saveTouristAttraction(@ModelAttribute TouristAttraction touristAttraction) {
-        List<Tags> selectedTags = touristAttraction.getTags().stream()
-                .map(tag -> Tags.valueOf(tag.toString()))
-                .collect(Collectors.toList());
-
-        touristAttraction.setTags(selectedTags);
+    public String saveTouristAttraction(@ModelAttribute TouristAttraction touristAttraction, Tags newTag) {
+        touristAttraction.setTags(newTag);
         touristService.addTouristAttraction(touristAttraction);
 
         return "redirect:/attractions";

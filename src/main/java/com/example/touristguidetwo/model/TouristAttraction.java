@@ -3,13 +3,15 @@ package com.example.touristguidetwo.model;
 import java.util.List;
 
 public class TouristAttraction {
+    private int attractionID;
     private String name;
     private String description;
     private City city;
-    private List<Tags> tags;
+    private Tags tags;
 
     // Konstruktor
-    public TouristAttraction(String name, String description, City city, List<Tags> tags) {
+    public TouristAttraction(int attractionID, String name, String description, City city, Tags tags) {
+        this.attractionID = attractionID;
         this.name = name;
         this.description = description;
         this.city = city;
@@ -19,12 +21,22 @@ public class TouristAttraction {
     public TouristAttraction() {
         this.name = "";
         this.description = "";
-        this.city = City.København;
-        this.tags = List.of();
+        this.city = new City("", 0);
+        this.tags = new Tags("", 0);
     }
 
 
     // Getters og setters
+
+
+    public int getAttractionID() {
+        return attractionID;
+    }
+
+    public void setAttractionID(int attractionID) {
+        this.attractionID = attractionID;
+    }
+
     public String getName() {
         return name;
     }
@@ -49,11 +61,11 @@ public class TouristAttraction {
         this.city = city;
     }
 
-    public List<Tags> getTags() {
+    public Tags getTags(){
         return tags;
     }
 
-    public void setTags(List<Tags> tags) {
+    public void setTags(Tags tags){
         this.tags = tags;
     }
 }
